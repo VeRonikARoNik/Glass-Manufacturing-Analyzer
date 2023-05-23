@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import sklearn.linear_model as skl
-
+from sklearn.ensemble import RandomForestRegressor
 class GlassManufacturingRegressionAnalyzer:
 
     def __init__(self, path_to_training_data: str, path_to_validation_data: str, path_to_testing_data: str) -> None:
@@ -89,6 +89,24 @@ class GlassManufacturingRegressionAnalyzer:
             return multi_linear_regression_model
     
     # TODO: Random Forest or SVM implementation.
+    def get_random_forest_model_for_out(self, out_id:int, n_estimators=100):
+        """
+        Creating Random Forest Regreesion model for output 1.
+        """
+        if out_id >= 1 and out_id <=5:
+            random_forest_model = RandomForestRegressor(n_estimators=n_estimators)
+            input_training_data, output_training_data = self.training_input_glass_numpy, self.training_outputs_glass_numpy[f"out{out_id}"]
+            random_forest_model.fit(input_training_data, output_training_data)
+            r_square = random_forest_model.score(input_training_data, output_training_data)
+            print(f"\n========== Random Forest Regression Model for Out{out_id} =========\n")
+            print("a) Validation data: ")
+            print(f"Coefficient of determination: {r_square}")
+            print("b) Predicted data:")
+            print(f"In1->In29: {self.testing_input_glass_numpy}")
+            output_predicted_values = random_forest_model.predict(self.testing_input_glass_numpy)
+            print(f"Out1->Out5: {output_predicted_values}")
+            print(f"\n====================================================================")
+            return random_forest_model
 
 analyzer = GlassManufacturingRegressionAnalyzer(path_to_training_data="training_input_manufacturing_data.csv", 
                                                 path_to_validation_data="validation_input_manufacturing_data.csv",
@@ -99,3 +117,9 @@ analyzer.get_multi_linear_regression_model_for_out(2)
 analyzer.get_multi_linear_regression_model_for_out(3)
 analyzer.get_multi_linear_regression_model_for_out(4)
 analyzer.get_multi_linear_regression_model_for_out(5)
+
+analyzer.get_random_forest_model_for_out(1)
+analyzer.get_random_forest_model_for_out(2)
+analyzer.get_random_forest_model_for_out(3)
+analyzer.get_random_forest_model_for_out(4)
+analyzer.get_random_forest_model_for_out(5)
